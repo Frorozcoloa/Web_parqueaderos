@@ -1,20 +1,22 @@
 import {Row, Card, Col, Form, Button} from 'react-bootstrap'
 import React, { useState } from 'react';
 import { FaSpinner } from 'react-icons/fa';
-import axios from 'axios';
 
 
-function SelectPark({onSubmit, celda, data}){
+function SelectPark({onSubmit, data}){
+
     //Colocar las celdas que estan libres
     let valores = data? data.map(e=> e.celda): []
-    let matriz = Array.apply(null, {length: 30}).map(Number.call, Number).map((e)=> e+1);
+    let matriz = Array.apply(null, {length: 29}).map(Number.call, Number).map(e=>e+1)
+    
     let options = matriz.filter(x=> !valores.includes(x))
     let printOptions = options.map((e)=> {
         return( <option value={e} key={e}>{e}</option>)
     })
 
     return(
-        <select className="form-control" id="exampleFormControlSelect1" onChange={(e)=>onSubmit(e.target.value)} value={celda}>
+        <select className="form-control" id="exampleFormControlSelect1" onChange={(e)=>onSubmit(e.target.value)} >
+            <option>Seleciona la celda</option>
             {printOptions}
         </select>
     )
@@ -54,11 +56,19 @@ function Park(values){
     const [celda, setCelda] = useState(0)
     const [placa, setPlaca] = useState('')
 
-    
 
 
     function handleSubmit(){
-        alert(`Se ha agregado ${celda}, ${placa}`)
+        if(placa.length>0){
+
+            let data = {'celda': celda, 'placa': placa}
+            values.postData(data)
+        
+        }
+        else{
+            alert("No ingresó la placa")
+        }
+        
     }
    
     return(
@@ -77,7 +87,7 @@ function Park(values){
                             <Form.Group as={Row} className="mb-4" controlId="FormCelda">
                                 <Form.Label column sm="2">Celda</Form.Label>
                                 <Col sm="10">
-                                    <SelectPark onSubmit={setCelda} celda={celda} data={values.data}/>
+                                    <SelectPark onSubmit={setCelda} data={values.data}/>
                                 </Col>
                             </Form.Group>
                                 <Button  align="center" variant="primary" type="submit">Agregar</Button>

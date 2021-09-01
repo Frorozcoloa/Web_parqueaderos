@@ -10,13 +10,17 @@ import Park from './components/park'
 
 function App() {
   const[data, setData] = useState(null)
-  const[post, setPost] = useState(null)
+ 
 
   const getData = async () => {
-    
       await axios.get('http://localhost:8000/')
       .then(res => setData(res.data) )
       .catch(err=> console.log(err))
+    }
+
+  const postData = async (data) =>{
+    await axios.post("http://localhost:8000/", data)
+    .catch(err=> console.log(err))
     }
 
   useEffect(()=> {
@@ -25,7 +29,7 @@ function App() {
 
   return (
     <Container>
-      <Park data={data} post={post} setPost={setPost}/>
+      <Park data={data}  postData={postData}/>
     </Container>
   );
 }
