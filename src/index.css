@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.row-header{
+  margin-top: 100Px
+}
+
+.objecto{
+  background-color: whitesmoke !important;
+  width: 45rem;
+}
+
+.celda{
+  background-color: #57CC99 !important;
+}
