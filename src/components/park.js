@@ -1,7 +1,9 @@
 import {Row, Card, Col, Form, Button} from 'react-bootstrap'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSpinner } from 'react-icons/fa';
+import axios from 'axios';
 
+import {useHistory} from 'react-router-dom';
 
 function SelectPark({onSubmit, data}){
 
@@ -23,9 +25,17 @@ function SelectPark({onSubmit, data}){
 }
 
 
-function Celdas({data}){
-    if(data){
-        let printAllData = data.map((vehiculo)=> {
+function Celdas(props){
+    let History = useHistory()
+
+
+   
+    let hadleFinish = (celda)=>{
+        console.log('click');
+        History.push(`/factura/${celda}`)
+    }
+    if(props.data){
+        let printAllData = props.data.map((vehiculo)=> {
             return(
                 <Col sm="3" className="mt-5" key={vehiculo.celda}>
                         <Card className="celda">
@@ -33,8 +43,8 @@ function Celdas({data}){
                             <Card.Body>
                                 <Card.Text><b>Placa:</b> {vehiculo.placa}</Card.Text>
                                 <Card.Text><b>Fecha:</b> {vehiculo.fecha}</Card.Text>
-                                <Button type="button" className="btn btn-danger">Finalizar</Button>
                             </Card.Body>
+                            <Button type="button" className="btn btn-danger" onClick={()=> hadleFinish(vehiculo.celda)}>Finalizar</Button>
                         </Card>
                     </Col>
             )
@@ -52,9 +62,26 @@ function Celdas({data}){
 }
 
 
-function Park(values){
+function Park(){
     const [celda, setCelda] = useState(0)
     const [placa, setPlaca] = useState('')
+    const[data, setData] = useState(null)
+ 
+
+    const getData = async () => {
+        await axios.get('http://localhost:8000/')
+        .then(res => setData(res.data) )
+        .catch(err=> console.log(err))
+      }
+  
+    const postData = async (data) =>{
+      await axios.post("http://localhost:8000/", data)
+      .catch(err=> console.log(err))
+      }
+      
+    useEffect(()=> {
+      getData()
+      }, [])
 
 
 
@@ -62,7 +89,7 @@ function Park(values){
         if(placa.length>0){
 
             let data = {'celda': celda, 'placa': placa}
-            values.postData(data)
+            postData(data)
         
         }
         else{
@@ -87,15 +114,15 @@ function Park(values){
                             <Form.Group as={Row} className="mb-4" controlId="FormCelda">
                                 <Form.Label column sm="2">Celda</Form.Label>
                                 <Col sm="10">
-                                    <SelectPark onSubmit={setCelda} data={values.data}/>
+                                    <SelectPark onSubmit={setCelda} data={data}/>
                                 </Col>
                             </Form.Group>
-                                <Button  align="center" variant="primary" type="submit">Agregar</Button>
+                                <Button  className="btn btn-primary btn-block" variant="primary" type="submit">Agregar</Button>
                         </Form>
                     </Card.Body>
                 </Card>
             </Row>
-            <Celdas data={values.data}/>
+            <Celdas data={data}/>
         </>
     );
 }
