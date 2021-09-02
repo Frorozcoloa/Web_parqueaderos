@@ -18,7 +18,7 @@ function SelectPark({onSubmit, data}){
 
     return(
         <select className="form-control" id="exampleFormControlSelect1" onChange={(e)=>onSubmit(e.target.value)} >
-            <option>Seleciona la celda</option>
+            <option value="a">Seleciona la celda</option>
             {printOptions}
         </select>
     )

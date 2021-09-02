@@ -14,6 +14,7 @@ function Factura(props){
     const retirarHandle = (id) =>{
         deleteVehi(id)
     }
+   
     const deleteVehi= async(celda)=>{
         await axios.delete(`http://localhost:8000/${celda}`, {'celda': celda})
         .then(res=> History.push('/'))
@@ -24,6 +25,7 @@ function Factura(props){
         .then(res=> setData(res.data))
         }
     useEffect(()=>{
+        window.location.href = `http://localhost:8000/factura/${id}`;
         getPrecio()
     },[])
     if(data){
