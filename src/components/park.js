@@ -1,6 +1,7 @@
 import {Row, Card, Col, Form, Button} from 'react-bootstrap'
 import React, { useState, useEffect } from 'react';
 import { FaSpinner } from 'react-icons/fa';
+import {AiOutlineSearch } from 'react-icons/ai'
 import axios from 'axios';
 
 import {useHistory} from 'react-router-dom';
@@ -50,7 +51,7 @@ function Celdas(props){
             )
         })
         return(
-            <Row className="row-header">
+            <Row>
                     {printAllData}
                 </Row>
         )
@@ -63,9 +64,14 @@ function Celdas(props){
 
 
 function Park(){
-    const [celda, setCelda] = useState(0)
-    const [placa, setPlaca] = useState('')
+    const[dataDinamica, setDataDinamica] = useState(null)
+    const[busqueda, setBusqueda] = useState('')
     const[data, setData] = useState(null)
+
+    const [placa, setPlaca] = useState('')
+    const [celda, setCelda] = useState(0)
+   
+    
  
 
     const getData = async () => {
@@ -97,6 +103,19 @@ function Park(){
         }
         
     }
+    const handleBusqueda = (e)=>{
+        setBusqueda(e.target.value)
+        filtrar(e.target.value)
+    }
+    const filtrar = (terminoBusqueda)=>{
+        var resultadosBusqueda = data.filter((elm)=>{
+            if( elm.placa.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()) 
+            || elm.celda.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())){
+                return elm;
+            }
+        })
+        setDataDinamica(resultadosBusqueda);
+    }
    
     return(
         <>
@@ -122,7 +141,20 @@ function Park(){
                     </Card.Body>
                 </Card>
             </Row>
-            <Celdas data={data}/>
+            <Row clasName="row-header">
+                <div class="input-group mb-3 col-sm-3 mt-5">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default"><AiOutlineSearch /></span>
+                    </div>
+                    <input type="text" 
+                        class="form-control" 
+                        aria-label="Sizing example input" 
+                        aria-describedby="inputGroup-sizing-default" 
+                        value={busqueda}
+                        onChange={e=>handleBusqueda(e)}/>
+                </div>
+            </Row>
+            <Celdas data={dataDinamica? dataDinamica: data}/>
         </>
     );
 }
